@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>IE7 - IE11 Compatibility Litmus Test Suite</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 { color: #0078d4; border-bottom: 2px solid #0078d4; padding-bottom: 10px; }
+        h2 { margin-top: 25px; color: #505050; }
+        
+        /* Test Grid Layout */
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .matrix-table th { background-color: #f8f9fa; }
+        
+        /* Badges */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #cce5ff; color: #004085; }
+
+        /* IE9+ CSS3 Border Radius & Shadow Test Box */
+        .css3-test-box {
+            margin-top: 15px;
+            padding: 20px;
+            background-color: #e1dfdd;
+            border: 2px solid #0078d4;
+            border-radius: 15px; /* IE9+ */
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.3); /* IE9+ */
+        }
+
+        /* IE10+ Flexbox Test (Old MS syntax included for safety) */
+        .flex-container {
+            margin-top: 15px;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            background: #eaeaea;
+            padding: 10px;
+        }
+        .flex-item {
+            background: #0078d4;
+            color: white;
+            padding: 15px;
+            width: 30%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Browser Engine Litmus Test</h1>
+    <p>This page evaluates the active document execution mode and JavaScript feature availability inside HeeHaw.</p>
+
+    <div style="background:#f3f2f1; padding:15px; border-left:5px solid #0078d4; margin-bottom:20px;">
+        <h3>Engine Report</h3>
+        <p><strong>Detected IE Document Mode (document.documentMode):</strong> 
+            <span id="doc-mode-badge" class="badge info">Evaluating...</span>
+        </p>
+    </div>
+
+    <h2>Feature Support Matrix</h2>
+    <table class="matrix-table">
+        <thead>
+            <tr>
+                <th>Target IE Era</th>
+                <th>Feature Tested</th>
+                <th>Detection Method</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>IE8+</strong></td>
+                <td>Native JSON Parser</td>
+                <td><code>typeof window.JSON</code></td>
+                <td><span id="test-json" class="badge fail">Unsupported (IE7 Engine)</span></td>
+            </tr>
+            <tr>
+                <td><strong>IE8+</strong></td>
+                <td>Local Storage API</td>
+                <td><code>typeof window.localStorage</code></td>
+                <td><span id="test-storage" class="badge fail">Unsupported (IE7 Engine)</span></td>
+            </tr>
+            <tr>
+                <td><strong>IE9+</strong></td>
+                <td>Modern DOM Events</td>
+                <td><code>!!document.addEventListener</code></td>
+                <td><span id="test-events" class="badge fail">Unsupported (IE8 or lower)</span></td>
+            </tr>
+            <tr>
+                <td><strong>IE9+</strong></td>
+                <td>HTML5 Canvas Rendering Engine</td>
+                <td><code>!!document.createElement('canvas').getContext</code></td>
+                <td><span id="test-canvas" class="badge fail">Unsupported (IE8 or lower)</span></td>
+            </tr>
+            <tr>
+                <td><strong>IE10+</strong></td>
+                <td>Base64 Encoding/Decoding</td>
+                <td><code>typeof window.atob</code></td>
+                <td><span id="test-atob" class="badge fail">Unsupported (IE9 or lower)</span></td>
+            </tr>
+            <tr>
+                <td><strong>IE11</strong></td>
+                <td>Mutation Observers (DOM tracking)</td>
+                <td><code>typeof window.MutationObserver</code></td>
+                <td><span id="test-mutation" class="badge fail">Unsupported (IE10 or lower)</span></td>
+            </tr>
+            <tr>
+                <td><strong>IE11</strong></td>
+                <td>Native Legacy Crypto API</td>
+                <td><code>typeof window.msCrypto</code></td>
+                <td><span id="test-crypto" class="badge fail">Unsupported</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Visual Layout Diagnostics</h2>
+    
+    <h3>1. CSS3 Graphics Check (Requires IE9+)</h3>
+    <div class="css3-test-box">
+        If this box has **rounded corners** and a **drop shadow**, your wrapper engine is rendering at least at an **IE9** level. If it is a harsh rectangle with no shadow, it's rendering in IE7/IE8 mode.
+    </div>
+
+    <h3>2. CSS Layout Engine Check (Requires IE10+)</h3>
+    <div class="flex-container">
+        <div class="flex-item">Flex Item 1</div>
+        <div class="flex-item">Flex Item 2</div>
+        <div class="flex-item">Flex Item 3</div>
+    </div>
+    <small style="color:#666;">If the three blue blocks above are lined up horizontally in a single row with spacing between them, Flexbox (IE10+) layout processing is operational.</small>
+</div>
+
+<script type="text/javascript">
+    // 1. Report explicit Document Mode
+    var docMode = document.documentMode;
+    var modeBadge = document.getElementById('doc-mode-badge');
+    if (docMode) {
+        modeBadge.innerText = "IE " + docMode + " Standards Mode";
+        if (docMode >= 11) { modeBadge.className = "badge pass"; }
+    } else {
+        modeBadge.innerText = "Quirks Mode / Pre-IE7 Engine";
+        modeBadge.className = "badge fail";
+    }
+
+    // Helper function to flag UI changes smoothly across older engines
+    function updateStatus(elementId, condition) {
+        var el = document.getElementById(elementId);
+        if (el && condition) {
+            el.innerText = "Supported / Active";
+            el.className = "badge pass";
+        }
+    }
+
+    // Execute Progressive Feature Probing
+    try {
+        // IE8 Features
+        updateStatus('test-json', typeof window.JSON !== 'undefined');
+        updateStatus('test-storage', typeof window.localStorage !== 'undefined');
+        
+        // IE9 Features
+        updateStatus('test-events', !!document.addEventListener);
+        updateStatus('test-canvas', !!document.createElement('canvas').getContext);
+        
+        // IE10 Features
+        updateStatus('test-atob', typeof window.atob !== 'undefined');
+        
+        // IE11 Features
+        updateStatus('test-mutation', typeof window.MutationObserver !== 'undefined');
+        updateStatus('test-crypto', typeof window.msCrypto !== 'undefined');
+    } catch (e) {
+        // Soft fail if very early scripts error out completely
+    }
+</script>
+
+</body>
+</html>
